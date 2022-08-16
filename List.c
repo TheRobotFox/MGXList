@@ -107,13 +107,13 @@ bool List_copy(List a, List b)
 	return 0;
 }
 
-//void List_print(List l, void (*print)(void*))
-//{
-//	printf("[");
-//	for(char *start=List_start(l), *end=List_end(l); start!=end; start+=l->element_size){
-//		print(start);
-//		if(start!=end-l->element_size)
-//			printf(", ");
-//	}
-//	printf("]");
-//}
+void List_print(List l, void (*print)(void*))
+{
+	printf("[");
+	for(char *start=List_start(l), *end=List_end(l); start!=end; start+=l->element_size){
+		print(start);
+		if(start!=end-l->element_size)
+			printf(", ");
+	}
+	printf("]");
+}
