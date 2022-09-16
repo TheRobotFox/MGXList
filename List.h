@@ -15,8 +15,9 @@ bool 	List_reserve(List l, size_t capacity);
 void*	List_find(List l, bool (*compare)(void*, void*), void* arg);
 void*	List_append(List l, const void *element);
 void* List_pop(List l);
-bool	List_copy(List a, List b);
+bool	List_copy(List a, List b); // copy a to b
 void List_clear(List l);
 void *Buff_find(char *start, char *end, size_t el_size, bool (*compare)(void*, void*), void *arg);
 void List_foreach(List l, void (*func)(void*));
 void List_remove(List l, size_t index);
+void List_concat(List a, b); // cat b to a

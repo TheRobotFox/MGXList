@@ -124,3 +124,10 @@ void List_remove(List l, size_t index)
 		memcpy(data+i*l->element_size, data+(i+1)*l->element_size, l->element_size);
 	l->size--;
 }
+
+void List_concat(List a, List b)
+{
+	a->size+=b->size;
+	List_reserve(a, a->size);
+	memcpy(List_end(a), List_start(b), List_end(b)-List_start(b));
+}
