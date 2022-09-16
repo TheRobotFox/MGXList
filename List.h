@@ -20,4 +20,4 @@ void List_clear(List l);
 void *Buff_find(char *start, char *end, size_t el_size, bool (*compare)(void*, void*), void *arg);
 void List_foreach(List l, void (*func)(void*));
 void List_remove(List l, size_t index);
-void List_concat(List a, b); // cat b to a
+void List_concat(List a, List b); // cat b to a
