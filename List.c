@@ -107,13 +107,20 @@ bool List_copy(List a, List b)
 	return 0;
 }
 
-void List_print(List l, void (*print)(void*))
+void List_foreach(List l, void (*func)(void*))
 {
-	printf("[");
 	for(char *start=List_start(l), *end=List_end(l); start!=end; start+=l->element_size){
-		print(start);
-		if(start!=end-l->element_size)
-			printf(", ");
+		func(start);
 	}
-	printf("]");
+}
+
+void List_remove(List l, size_t index)
+{
+	if(index>=l->size)
+		return;
+
+	char *data = l->data;
+	for(size_t i=index; i<List_size(l); i++)
+		memcpy(data+i*l->element_size, data+(i+1)*l->element_size, l->element_size);
+	l->size--;
 }

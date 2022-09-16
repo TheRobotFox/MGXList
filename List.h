@@ -18,4 +18,5 @@ void* List_pop(List l);
 bool	List_copy(List a, List b);
 void List_clear(List l);
 void *Buff_find(char *start, char *end, size_t el_size, bool (*compare)(void*, void*), void *arg);
-void List_print(List l, void (*print)(void*));
+void List_foreach(List l, void (*func)(void*));
+void List_remove(List l, size_t index);
