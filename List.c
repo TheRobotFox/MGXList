@@ -35,10 +35,8 @@ static inline void* List_at(List l, signed long long int index)
 
 void* List_get(List l, signed long long int index)
 {
-	if(index<l->size)
+	if(index<l->max)
 		return List_at(l,index);
-	if(l->size && index<0)
-		return List_at(l, index);
 	return NULL;
 }
 
@@ -116,18 +114,20 @@ void List_foreach(List l, void (*func)(void*))
 
 void List_remove(List l, size_t index)
 {
-	if(index>=l->size)
+	if(index>=l->size){
+		printf("OOB\n");
 		return;
+	}
 
 	char *data = l->data;
-	for(size_t i=index; i<List_size(l); i++)
-		memcpy(data+i*l->element_size, data+(i+1)*l->element_size, l->element_size);
 	l->size--;
+	for(size_t i=index; i<l->size; i++)
+		memcpy(data+i*l->element_size, data+(i+1)*l->element_size, l->element_size);
 }
 
 void List_concat(List a, List b)
 {
-	a->size+=b->size;
-	List_reserve(a, a->size);
+	List_reserve(a, a->size+b->size);
 	memcpy(List_end(a), List_start(b), List_end(b)-List_start(b));
+	a->size+=b->size;
 }
