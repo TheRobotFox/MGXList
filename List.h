@@ -21,3 +21,4 @@ void *Buff_find(char *start, char *end, size_t el_size, bool (*compare)(void*, v
 void List_foreach(List l, void (*func)(void*));
 void List_remove(List l, size_t index);
 void List_concat(List a, List b); // cat b to a
+void    List_grow(List l, size_t size);

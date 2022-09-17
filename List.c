@@ -131,3 +131,10 @@ void List_concat(List a, List b)
 	memcpy(List_end(a), List_start(b), List_end(b)-List_start(b));
 	a->size+=b->size;
 }
+
+void List_grow(List l, size_t size)
+{
+	if(size>l->max)
+		List_reserve(l, size);
+	l->size=size;
+}
