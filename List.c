@@ -98,10 +98,10 @@ bool List_copy(List a, List b)
 {
 	if(a->element_size!=b->element_size)
 		return 2;
-	if(List_reserve(b,List_size(a)))
+	if(List_reserve(a,List_size(b)))
 		return 1;
-	b->size=a->size;
-	memcpy(List_start(b),List_start(a),List_end(a)-List_start(a));
+	a->size=b->size;
+	memcpy(List_start(a),List_start(b),List_end(b)-List_start(b));
 	return 0;
 }
 
@@ -114,10 +114,8 @@ void List_foreach(List l, void (*func)(void*))
 
 void List_remove(List l, size_t index)
 {
-	if(index>=l->size){
-		printf("OOB\n");
+	if(index>=l->size)
 		return;
-	}
 
 	char *data = l->data;
 	l->size--;
