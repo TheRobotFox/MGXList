@@ -164,3 +164,41 @@ void List_grow(List l, size_t size)
 		List_reserve(l, size);
 	l->size=size;
 }
+
+void List_swap(List l, size_t a, size_t b)
+{
+	void *tmp=malloc(l->element_size);
+	memcpy(tmp, List_at(l,a), l->element_size);
+	memcpy(List_at(l,a), List_at(l,b), l->element_size);
+	memcpy(List_at(l,b), tmp, l->element_size);
+	free(tmp);
+}
+
+static void quick_sort(List list, size_t left, size_t right, bool (*cmp)(void *a, void *b))
+{
+	if(left>=right)
+		return;
+
+	void *pivot = List_at(list, right);
+	size_t l=left, r=right-1;
+
+	while(l<r){
+		for(; l<right && !cmp(pivot, List_at(list, l))/* pivot>list[l] */; l++);
+		for(; r>left && cmp(pivot, List_at(list, r))/* pivot<list[r] */; r--);
+		if(l<r)
+			List_swap(list, r, l);
+
+	}
+	if(cmp(pivot, List_at(list,l)))
+		List_swap(list, right, l);
+
+	if(l>0)
+		quick_sort(list, left, l-1, cmp);
+	quick_sort(list, l+1, right, cmp);
+}
+
+void List_sort(List l, bool (*cmp)(void *a, void *b))
+{
+	quick_sort(l, 0, List_size(l)-1, cmp);
+}
+
