@@ -102,17 +102,17 @@ void *List_find(List l, bool (*compare)(void*, void*), void *arg)
 	return Buff_find(List_start(l),List_end(l),l->element_size,compare,arg);
 }
 
-void* List_append(List l, const void *array, size_t len)
+void* List_append(List l, const void *array, size_t n)
 {
-	if(l->size+len>l->max)
+	if(l->size+n>l->max)
 	{
-		if(List_reserve(l, l->max+len*l->element_size))
+		if(List_reserve(l, l->max+n*l->element_size))
 			return 0;
 	}
 	void *ptr=List_at(l,l->size);
-	l->size+=len;
+	l->size+=n;
 	if(array)
-		memcpy(ptr, array, len*l->element_size);
+		memcpy(ptr, array, n*l->element_size);
 	return ptr;
 }
 
@@ -155,7 +155,7 @@ void List_foreach(List l, void (*func)(void*))
 	}
 }
 
-void List_remove(List l, size_t index)
+void List_rmi(List l, size_t index)
 {
 	if(index>=l->size)
 		return;
@@ -164,6 +164,27 @@ void List_remove(List l, size_t index)
 	l->size--;
 	for(size_t i=index; i<l->size; i++)
 		memcpy(data+i*l->element_size, data+(i+1)*l->element_size, l->element_size);
+}
+
+size_t List_rme(List l, void *e)
+{
+	size_t size = List_size(l),
+		   skip=0;
+
+	for(size_t i=0; i<size-skip; i++)
+	{
+		for(size_t j=i+skip; j<size; j++)
+		{
+				if(memcmp(List_at(l, j), e, l->element_size)==0){
+					skip++;
+					continue;
+				}
+				break;
+		}
+		memcpy(List_at(l,i), List_at(l, i+skip), l->element_size);
+	}
+	l->size-=skip;
+	return skip;
 }
 
 void List_concat(List a, List b)
