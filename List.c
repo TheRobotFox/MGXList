@@ -1,6 +1,6 @@
 #include "List.h"
 #include <string.h>
-#include <stdio.h>
+#include <stdint.h>
 
 struct _List{
 	char *data;
@@ -44,7 +44,7 @@ static inline void* List_at(List l, signed long long int index)
 
 void* List_get(List l, signed long long int index)
 {
-	if(index<l->max || (index<0) && l->size)
+	if(((signed long long)index<l->max || (index<0)) && l->size)
 		return List_at(l,index);
 	return NULL;
 }
@@ -160,7 +160,7 @@ bool List_copy(List a, List b)
 	if(List_reserve(a,List_size(b)))
 		return 1;
 	a->size=b->size;
-	memcpy(List_start(a),List_start(b),List_end(b)-List_start(b));
+	memcpy(List_start(a),List_start(b),(uint8_t*)List_end(b)-(uint8_t*)List_start(b));
 	return 0;
 }
 
@@ -217,7 +217,7 @@ size_t List_rme(List l, void *e)
 void List_concat(List a, List b)
 {
 	List_reserve(a, a->size+b->size);
-	memcpy(List_end(a), List_start(b), List_end(b)-List_start(b));
+	memcpy(List_end(a), List_start(b), (uint8_t*)List_end(b)-(uint8_t*)List_start(b));
 	a->size+=b->size;
 }
 
@@ -228,7 +228,7 @@ void List_resize(List l, signed long long int size)
 			l->size+=size;
 		return;
 	} else {
-		if(size>l->max)
+		if(size>(signed long long int)l->max)
 			List_reserve(l, size);
 		l->size=size;
 	}
