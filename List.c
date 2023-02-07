@@ -44,7 +44,7 @@ static inline void* List_at(List l, signed long long int index)
 
 void* List_get(List l, signed long long int index)
 {
-	if(((signed long long)index<l->max || (index<0)) && l->size)
+	if((index<(signed long long)l->max || (index<0)) && l->size)
 		return List_at(l,index);
 	return NULL;
 }
