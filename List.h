@@ -24,6 +24,7 @@ void*   List_get(List l, signed long long int index);
 size_t 	List_size(List l);
 void*	List_start(List l);
 void*	List_end(List l);
+void	List_shrink(List l);
 size_t 	List_capacity(List l);
 bool 	List_reserve(List l, size_t capacity);
 void 	List_reserve_callback(List l, F_List_realloc_callback callback, void *arg);

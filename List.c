@@ -50,6 +50,20 @@ void* List_get(List l, signed long long int index)
 void* List_start(List l){return l->data;}
 void* List_end(List l){return l->data+(l->size*l->element_size);}
 
+void List_shrink(List l)
+{
+	if(l->max!=l->size) {
+		if(l->callback)
+			l->callback(l, CM_PRE_REALLOC, l->callback_arg);
+
+		l->data=realloc(l->data,l->size*l->element_size);
+		l->max=l->size;
+
+		if(l->callback)
+			l->callback(l, CM_POST_REALLOC, l->callback_arg);
+	}
+}
+
 size_t List_size(List l){return l->size;}
 size_t List_capacity(List l){return l->max;}
 
