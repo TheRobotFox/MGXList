@@ -8,7 +8,7 @@ struct _List{
 	size_t max;
 	size_t element_size;
 	float reserve_mult;
-	F_List_reserve_callback callback;
+	F_List_realloc_callback callback;
 	void *callback_arg;
 
 };
@@ -55,7 +55,7 @@ size_t List_capacity(List l){return l->max;}
 
 void List_reserve_mult(List l, float mult) { l->reserve_mult=mult; }
 
-void List_reserve_callback(List l, F_List_reserve_callback callback, void *arg)
+void List_realloc_callback(List l, F_List_realloc_callback callback, void *arg)
 {
 	l->callback=callback;
 	l->callback_arg=arg;
@@ -101,9 +101,24 @@ void *List_find(List l, bool (*compare)(void*, void*), void *arg)
 {
 	return Buff_find(List_start(l),List_end(l),l->element_size,compare,arg);
 }
-void* List_append(List l, const void *element)
+
+void* List_append(List l, const void *array, size_t len)
 {
-	if(l->size>=l->max)
+	if(l->size+len>l->max)
+	{
+		if(List_reserve(l, l->max+len*l->element_size))
+			return 0;
+	}
+	void *ptr=List_at(l,l->size);
+	l->size+=len;
+	if(array)
+		memcpy(ptr, array, len*l->element_size);
+	return ptr;
+}
+
+void* List_push(List l, const void *element)
+{
+	if(l->size>l->max)
 	{
 		if(List_reserve(l, l->max*l->reserve_mult))
 			return 0;
@@ -158,11 +173,17 @@ void List_concat(List a, List b)
 	a->size+=b->size;
 }
 
-void List_grow(List l, size_t size)
+void List_resize(List l, signed long long int size)
 {
-	if(size>l->max)
-		List_reserve(l, size);
-	l->size=size;
+	if(size<0){
+		if(l->size>0)
+			l->size+=size;
+		return;
+	} else {
+		if(size>l->max)
+			List_reserve(l, size);
+		l->size=size;
+	}
 }
 
 void List_swap(List l, size_t a, size_t b)
