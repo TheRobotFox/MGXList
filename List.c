@@ -9,6 +9,7 @@ struct _List{
 	size_t element_size;
 	float reserve_mult;
 	F_List_realloc_callback callback;
+	F_List_forward_handler handler;
 	void *callback_arg;
 
 };
@@ -22,6 +23,7 @@ List List_create(size_t element_size)
 	l->max=1;
 	l->reserve_mult=2.0f;
 	l->callback=NULL;
+	l->handler=NULL;
 
 	return l->data ? l : NULL;
 }
@@ -166,6 +168,17 @@ void List_foreach(List l, void (*func)(void*))
 {
 	for(char *start=List_start(l), *end=List_end(l); start!=end; start+=l->element_size){
 		func(start);
+	}
+}
+
+void List_forward_handler(List l, F_List_forward_handler handler)
+{
+	l->handler=handler;
+}
+void List_forward(List l, void (*func)(void*))
+{
+	for(char *start=List_start(l), *end=List_end(l); start!=end; start+=l->element_size){
+		l->handler(func, start);
 	}
 }
 
