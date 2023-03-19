@@ -134,7 +134,7 @@ void* List_append(List l, const void *array, size_t n)
 
 void* List_push(List l, const void *element)
 {
-	if(l->size>l->max)
+	if(l->size>=l->max)
 	{
 		if(List_reserve(l, l->max*l->reserve_mult))
 			return 0;
@@ -171,14 +171,10 @@ void List_foreach(List l, void (*func)(void*))
 	}
 }
 
-void List_forward_handler(List l, F_List_forward_handler handler)
-{
-	l->handler=handler;
-}
 void List_forward(List l, void (*func)(void*))
 {
 	for(char *start=List_start(l), *end=List_end(l); start!=end; start+=l->element_size){
-		l->handler(func, start);
+		func(*(void**)start);
 	}
 }
 
