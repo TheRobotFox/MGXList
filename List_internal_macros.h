@@ -15,7 +15,7 @@
 #define __List_GET_FIRST(X, ...) X
 
 #define __List_COMP_NAME_struct __List_RPAREN __List_COMP_NAME_MAKE __List_LPAREN struct __List_COMMA
-#define __List_COMP_NAME_union __List_COMMA __List_EAT __List_LPAREN
+#define __List_COMP_NAME_union __List_RPAREN __List_COMP_NAME_MAKE __List_LPAREN union __List_COMMA
 #define __List_COMP_NAME_MAKE(A, B) A ## __ ## B __List_COMMA
 
 #define __List_CAT1_(A, B) A ## B
@@ -28,6 +28,8 @@
 #define __List_CAT4_(A, B) A ## B
 #define __List_CAT5(A, B) __List_CAT5_(A, B)
 #define __List_CAT5_(A, B) A ## B
+#define __List_CAT6_(A, B) A ## B
+
 
 #define __List_ARRAY_NAME_ARRAY(T, S) __List_RPAREN __List_CAT2(__List_CAT2(__List_COMP_NAME(T), __), S) __List_COMMA __List_EAT __List_LPAREN
 #define __List_ARRAY_NAME(x) __List_EXPAND( __List_GET_FIRST __List_LPAREN __List_EAT __List_LPAREN __List_EXPAND(__List_CAT3_(__List_ARRAY_NAME_, x) __List_RPAREN) __List_COMP_NAME(x) __List_RPAREN)
@@ -57,7 +59,7 @@
 
 
 #define __List_RETURN_ARRAY(T, S) __List_RPAREN struct __List_PREFIX(ARRAY(T,S)) __List_COMMA __List_EAT __List_LPAREN
-#define __List_RETURN(x) __List_EXPAND( __List_GET_FIRST __List_LPAREN __List_EAT __List_LPAREN __List_EXPAND(__List_CAT1_(__List_RETURN_, x) __List_RPAREN) x __List_RPAREN)
+#define __List_RETURN(x) __List_EXPAND( __List_GET_FIRST __List_LPAREN __List_EAT __List_LPAREN __List_EXPAND(__List_CAT6_(__List_RETURN_, x) __List_RPAREN) x __List_RPAREN)
 
 #define __List_RETURN_PTR(T) __List_RETURN(T)*
 
