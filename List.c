@@ -1,6 +1,14 @@
 #include "List.h"
-#include <string.h>
 #include <stdint.h>
+
+IMPLEMENT_LIST(char)
+IMPLEMENT_LIST(short)
+IMPLEMENT_LIST(int)
+IMPLEMENT_LIST(long)
+IMPLEMENT_LIST(size_t)
+IMPLEMENT_LIST(float)
+IMPLEMENT_LIST(double)
+IMPLEMENT_LIST(List)
 
 struct _List{
 	char *data;
@@ -9,9 +17,7 @@ struct _List{
 	size_t element_size;
 	float reserve_mult;
 	F_List_realloc_callback callback;
-	F_List_forward_handler handler;
 	void *callback_arg;
-
 };
 
 List List_create(size_t element_size)
@@ -23,7 +29,6 @@ List List_create(size_t element_size)
 	l->max=1;
 	l->reserve_mult=2.0f;
 	l->callback=NULL;
-	l->handler=NULL;
 
 	return l->data ? l : NULL;
 }
@@ -34,7 +39,7 @@ void List_free(List l)
 	free(l);
 }
 
-static inline void* List_at(List l, signed long long int index)
+static inline void* _List_at(List l, signed long long int index)
 {
 	if(index<0){
 		index = (l->size-1+((index+1)%l->size));
@@ -42,10 +47,10 @@ static inline void* List_at(List l, signed long long int index)
 	return l->data+(l->element_size*index);
 }
 
-void* List_get(List l, signed long long int index)
+void* List_at(List l, signed long long int index)
 {
 	if((index<(signed long long)l->max || (index<0)) && l->size)
-		return List_at(l,index);
+		return _List_at(l,index);
 	return NULL;
 }
 
@@ -90,11 +95,6 @@ bool List_reserve(List l, size_t capacity)
 		if(l->callback)
 			l->callback(l, CM_POST_REALLOC, l->callback_arg);
 
-	} else {
-
-		if(l->callback)
-			l->callback(l, CM_NO_REALLOC, l->callback_arg);
-
 	}
 
 	return !(l->data);
@@ -125,7 +125,7 @@ void* List_append(List l, const void *array, size_t n)
 		if(List_reserve(l, l->max+n*l->element_size))
 			return 0;
 	}
-	void *ptr=List_at(l,l->size);
+	void *ptr=_List_at(l,l->size);
 	l->size+=n;
 	if(array)
 		memcpy(ptr, array, n*l->element_size);
@@ -139,7 +139,7 @@ void* List_push(List l, const void *element)
 		if(List_reserve(l, l->max*l->reserve_mult))
 			return 0;
 	}
-	void *ptr=List_at(l,l->size);
+	void *ptr=_List_at(l,l->size);
 	l->size++;
 	if(element)
 		memcpy(ptr,element,l->element_size);
@@ -150,7 +150,7 @@ void* List_pop(List l)
 {
 	if(l->size==0)
 		return NULL;
-	return List_at(l, --l->size);
+	return _List_at(l, --l->size);
 }
 
 bool List_copy(List a, List b)
@@ -168,13 +168,6 @@ void List_foreach(List l, void (*func)(void*))
 {
 	for(char *start=List_start(l), *end=List_end(l); start!=end; start+=l->element_size){
 		func(start);
-	}
-}
-
-void List_forward(List l, void (*func)(void*))
-{
-	for(char *start=List_start(l), *end=List_end(l); start!=end; start+=l->element_size){
-		func(*(void**)start);
 	}
 }
 
@@ -198,13 +191,13 @@ size_t List_rme(List l, void *e)
 	{
 		for(size_t j=i+skip; j<size; j++)
 		{
-				if(memcmp(List_at(l, j), e, l->element_size)==0){
+				if(memcmp(_List_at(l, j), e, l->element_size)==0){
 					skip++;
 					continue;
 				}
 				break;
 		}
-		memcpy(List_at(l,i), List_at(l, i+skip), l->element_size);
+		memcpy(_List_at(l,i), List_at(l, i+skip), l->element_size);
 	}
 	l->size-=skip;
 	return skip;
@@ -233,9 +226,9 @@ void List_resize(List l, signed long long int size)
 void List_swap(List l, size_t a, size_t b)
 {
 	void *tmp=malloc(l->element_size);
-	memcpy(tmp, List_at(l,a), l->element_size);
-	memcpy(List_at(l,a), List_at(l,b), l->element_size);
-	memcpy(List_at(l,b), tmp, l->element_size);
+	memcpy(tmp, _List_at(l,a), l->element_size);
+	memcpy(_List_at(l,a), List_at(l,b), l->element_size);
+	memcpy(_List_at(l,b), tmp, l->element_size);
 	free(tmp);
 }
 
@@ -244,17 +237,17 @@ static void quick_sort(List list, size_t left, size_t right, bool (*cmp)(void *a
 	if(left>=right)
 		return;
 
-	void *pivot = List_at(list, right);
+	void *pivot = _List_at(list, right);
 	size_t l=left, r=right-1;
 
 	while(l<r){
-		for(; l<right && !cmp(pivot, List_at(list, l))/* pivot>list[l] */; l++);
-		for(; r>left && cmp(pivot, List_at(list, r))/* pivot<list[r] */; r--);
+		for(; l<right && !cmp(pivot, _List_at(list, l))/* pivot>list[l] */; l++);
+		for(; r>left && cmp(pivot, _List_at(list, r))/* pivot<list[r] */; r--);
 		if(l<r)
 			List_swap(list, r, l);
 
 	}
-	if(cmp(pivot, List_at(list,l)))
+	if(cmp(pivot, _List_at(list,l)))
 		List_swap(list, right, l);
 
 	if(l>0)
@@ -267,4 +260,3 @@ void List_sort(List l, bool (*cmp)(void *a, void *b))
 	if(List_size(l)>1)
 		quick_sort(l, 0, List_size(l)-1, cmp);
 }
-
