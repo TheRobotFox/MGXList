@@ -1,0 +1,3 @@
+[submodule "MGX"]
+	path = MGX
+	url = git@github.com:NoHamster/MGX

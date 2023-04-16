@@ -113,9 +113,17 @@ void *Buff_find(char *start, char *end, size_t el_size, bool (*compare)(void*, v
 	}
 	return NULL;
 }
-void *List_find(List l, bool (*compare)(void*, void*), void *arg)
+void *List_finde(List l, bool (*compare)(void*, void*), void *arg)
 {
 	return Buff_find(List_start(l),List_end(l),l->element_size,compare,arg);
+}
+
+int List_findi(List l, bool (*compare)(void*, void*), void *arg)
+{
+	void* e = List_finde(l, compare, arg);
+	if(e==NULL)
+		return -1;
+	return (size_t)(e-List_start(l))/l->element_size;
 }
 
 void* List_append(List l, const void *array, size_t n)
