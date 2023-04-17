@@ -51,6 +51,8 @@ void    List_resize(List l, signed long long int size);
 void    List_swap(List l, size_t a, size_t b);
 void    List_sort(List l, bool (*cmp)(void *a, void *b));
 
+#define LIST(T) List
+
 #define List_GET_REF(T, l, index) (*(T*)List_at(l, index))
 
 #define _LIST(T, func) __List_FUNC(T, func)
