@@ -57,7 +57,7 @@ void    List_sort(List l, bool (*cmp)(void *a, void *b));
 
 #define _LIST(T, func) __List_FUNC(T, func)
 
-#define LIST_ref(T) *(T*)List_at
+#define LIST_get(T) *(T*)List_at
 #define LIST_create(T) List_create(sizeof(MGX_T(T)))
 #define LIST_push(T) _LIST(T, push)
 #define LIST_pop(T) _LIST(T, pop)
