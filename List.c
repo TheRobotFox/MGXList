@@ -123,7 +123,7 @@ int List_findi(List l, bool (*compare)(void*, void*), void *arg)
 	void* e = List_finde(l, compare, arg);
 	if(e==NULL)
 		return -1;
-	return (size_t)(e-List_start(l))/l->element_size;
+	return ((size_t)e-(size_t)List_start(l))/l->element_size;
 }
 
 void* List_append(List l, const void *array, size_t n)
