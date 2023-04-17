@@ -16,7 +16,7 @@ void __List_FUNC_MEMBER(T, M, forward)(List l, void (*func)(typeof(((MGX_T_PTR(T
         MGX_T_VAR_PTR(T, start) = List_start(l);                                                                             \
         MGX_T_VAR_PTR(T, end) = List_end(l);                                                                                 \
 	for(; start!=end; start++)                                                                                           \
-		func(start->M);                                                                                                \
+		func(start->M);                                                                                              \
 }
 
 #define INCLUDE_LIST(...) \
@@ -34,7 +34,7 @@ void* __List_FUNC(T, push)(List l, MGX_T_VAR(T, e));                            
 void* __List_FUNC(T, append)(List l, MGX_T_VAR_PTR(T,array), size_t n);                                                      \
 )                                                                                                                            \
 size_t __List_FUNC(T, rme)(List l, MGX_T_VAR(T, e));                                                                         \
-void __List_FUNC(T, foreach)(List l, void (*func)(MGX_T_PTR(T)));                                                            \
+void __List_FUNC(T, foreach)(List l, void (*func)(MGX_T_PTR(T), void*), void *arg);                                          \
 void __List_FUNC(T, forward)(List l, void (*func)(MGX_T(T)));                                                                \
 __List_RETURN_PTR(T) __List_FUNC(T, finde)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)), MGX_T_VAR_PTR(T, arg));\
 int __List_FUNC(T, findi)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)), MGX_T_VAR_PTR(T, arg));                 \
@@ -75,12 +75,12 @@ size_t __List_FUNC(T, rme)(List l, MGX_T_VAR(T, e))                             
 {                                                                                                                            \
 	return List_rme(l, &e);                                                                                              \
 }                                                                                                                            \
-void __List_FUNC(T, foreach)(List l, void (*func)(MGX_T_PTR(T)))                                                             \
+void __List_FUNC(T, foreach)(List l, void (*func)(MGX_T_PTR(T), void*), void *arg)                                           \
 {                                                                                                                            \
         MGX_T_VAR_PTR(T, start) = List_start(l);                                                                             \
         MGX_T_VAR_PTR(T, end) = List_end(l);                                                                                 \
 	for(; start!=end; start++)                                                                                           \
-		func(start);                                                                                                 \
+		func(start,arg);                                                                                             \
 }                                                                                                                            \
 void __List_FUNC(T, forward)(List l, void (*func)(MGX_T(T)))                                                                 \
 {                                                                                                                            \

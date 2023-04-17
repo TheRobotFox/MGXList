@@ -172,10 +172,10 @@ bool List_copy(List a, List b)
 	return 0;
 }
 
-void List_foreach(List l, void (*func)(void*))
+void List_foreach(List l, void (*func)(void*, void*), void *arg)
 {
 	for(char *start=List_start(l), *end=List_end(l); start!=end; start+=l->element_size){
-		func(start);
+		func(start, arg);
 	}
 }
 

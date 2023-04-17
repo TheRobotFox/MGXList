@@ -43,7 +43,7 @@ void*   List_pop(List l);
 bool	List_copy(List a, List b); // copy b into a
 void    List_clear(List l);
 void*   Buff_find(char *start, char *end, size_t el_size, bool (*compare)(void*, void*), void *arg);
-void    List_foreach(List l, void (*func)(void*));
+void    List_foreach(List l, void (*func)(void*, void*), void *arg);
 void    List_rmi(List l, size_t index);
 size_t	List_rme(List l, void *e);
 void    List_concat(List a, List b); // cat b to a
