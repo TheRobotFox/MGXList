@@ -36,7 +36,6 @@ void* __List_FUNC(T, append)(List l, MGX_T_VAR_PTR(T,array), size_t n);         
 size_t __List_FUNC(T, rme)(List l, MGX_T_VAR(T, e));                                                                         \
 void __List_FUNC(T, foreach)(List l, void (*func)(MGX_T_PTR(T)));                                                            \
 void __List_FUNC(T, forward)(List l, void (*func)(MGX_T(T)));                                                                \
-void __List_FUNC(T, forward_m)(List l, void (*func)(MGX_T(T)), size_t offset);                                               \
 __List_RETURN_PTR(T) __List_FUNC(T, finde)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)), MGX_T_VAR_PTR(T, arg));\
 int __List_FUNC(T, findi)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)), MGX_T_VAR_PTR(T, arg));                 \
 void __List_FUNC(T, sort)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)));                                        \
@@ -82,13 +81,6 @@ void __List_FUNC(T, foreach)(List l, void (*func)(MGX_T_PTR(T)))                
         MGX_T_VAR_PTR(T, end) = List_end(l);                                                                                 \
 	for(; start!=end; start++)                                                                                           \
 		func(start);                                                                                                 \
-}                                                                                                                            \
-void __List_FUNC(T, forward_m)(List l, void (*func)(MGX_T(T)), size_t offset)                                                                 \
-{                                                                                                                            \
-        MGX_T_VAR_PTR(T, start) = List_start(l);                                                                             \
-        MGX_T_VAR_PTR(T, end) = List_end(l);                                                                                 \
-	for(; start!=end; start++)                                                                                           \
-		func(*start);                                                                                                \
 }                                                                                                                            \
 void __List_FUNC(T, forward)(List l, void (*func)(MGX_T(T)))                                                                 \
 {                                                                                                                            \
