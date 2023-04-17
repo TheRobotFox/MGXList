@@ -64,6 +64,7 @@ void    List_sort(List l, bool (*cmp)(void *a, void *b));
 #define LIST_findi(T) _LIST(T, findi)
 #define LIST_finde(T) _LIST(T, finde)
 #define LIST_forward(T) _LIST(T, forward)
+#define LIST_forward_m(T, M) __List_FUNC_MEMBER(T,M,forward)
 #define LIST_foreach(T) _LIST(T, foreach)
 #define LIST_sort(T) _LIST(T, sort)
 #define LIST_rme(T) _LIST(T, rme)

@@ -3,7 +3,27 @@
 
 //#define LIST_RETURN_STRUCT true
 
-#define INCLUDE_LIST(T)                                                                                                      \
+// INCLUDE(...) << struct members
+#define __INCLUDE_MEMBER(...) __List_FOREACH(__INCLUDE_MEMBER_, __VA_ARGS__)
+#define __IMPLEMENT_MEMBER(...) __List_FOREACH(__IMPLEMENT_MEMBER_, __VA_ARGS__)
+
+#define __INCLUDE_MEMBER_(T, M) \
+void __List_FUNC_MEMBER(T, M, forward)(List l, void (*func)(typeof(((MGX_T_PTR(T))0)->M))); \
+
+#define __IMPLEMENT_MEMBER_(T, M) \
+void __List_FUNC_MEMBER(T, M, forward)(List l, void (*func)(typeof(((MGX_T_PTR(T))0)->M))) \
+{                                                                                                                            \
+        MGX_T_VAR_PTR(T, start) = List_start(l);                                                                             \
+        MGX_T_VAR_PTR(T, end) = List_end(l);                                                                                 \
+	for(; start!=end; start++)                                                                                           \
+		func(start->M);                                                                                                \
+}
+
+#define INCLUDE_LIST(...) \
+__INCLUDE_MEMBER(__VA_ARGS__)\
+__INCLUDE_LIST (__VA_ARGS__)
+
+#define __INCLUDE_LIST(T, ...) \
                                                                                                                              \
 MGX_IF(__List_RETURN_STRUCT)(                                                                                                \
 __List_RETURN_PTR(T) __List_FUNC(T, push)(List l, MGX_T_VAR(T, e));                                                          \
@@ -16,11 +36,17 @@ void* __List_FUNC(T, append)(List l, MGX_T_VAR_PTR(T,array), size_t n);         
 size_t __List_FUNC(T, rme)(List l, MGX_T_VAR(T, e));                                                                         \
 void __List_FUNC(T, foreach)(List l, void (*func)(MGX_T_PTR(T)));                                                            \
 void __List_FUNC(T, forward)(List l, void (*func)(MGX_T(T)));                                                                \
+void __List_FUNC(T, forward_m)(List l, void (*func)(MGX_T(T)), size_t offset);                                               \
 __List_RETURN_PTR(T) __List_FUNC(T, finde)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)), MGX_T_VAR_PTR(T, arg));\
 int __List_FUNC(T, findi)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)), MGX_T_VAR_PTR(T, arg));                 \
 void __List_FUNC(T, sort)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)));                                        \
 
-#define IMPLEMENT_LIST(T)                                                                                                    \
+#define IMPLEMENT_LIST(...) \
+__IMPLEMENT_MEMBER(__VA_ARGS__)\
+__List_EXPAND(__IMPLEMENT_LIST __MGX_LPAREN MGX_ARG_FIRST(__VA_ARGS__) __MGX_RPAREN)
+
+
+#define __IMPLEMENT_LIST(T) \
 __List_STRUCT(T)                                                                                                             \
 MGX_IF(__List_RETURN_STRUCT)(                                                                                                \
 __List_RETURN_PTR(T) __List_FUNC(T, append)(List l, MGX_T_VAR_PTR(T, array), size_t n)                                       \
@@ -56,6 +82,13 @@ void __List_FUNC(T, foreach)(List l, void (*func)(MGX_T_PTR(T)))                
         MGX_T_VAR_PTR(T, end) = List_end(l);                                                                                 \
 	for(; start!=end; start++)                                                                                           \
 		func(start);                                                                                                 \
+}                                                                                                                            \
+void __List_FUNC(T, forward_m)(List l, void (*func)(MGX_T(T)), size_t offset)                                                                 \
+{                                                                                                                            \
+        MGX_T_VAR_PTR(T, start) = List_start(l);                                                                             \
+        MGX_T_VAR_PTR(T, end) = List_end(l);                                                                                 \
+	for(; start!=end; start++)                                                                                           \
+		func(*start);                                                                                                \
 }                                                                                                                            \
 void __List_FUNC(T, forward)(List l, void (*func)(MGX_T(T)))                                                                 \
 {                                                                                                                            \
@@ -112,4 +145,5 @@ void __List_FUNC(T, sort)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(
 {												                             \
 	if(List_size(l)>1)                                                                                                   \
 		__List_FUNC(T, quicksort)(l, 0, List_size(l)-1, compare_equal);                                              \
-}
+}\
+
