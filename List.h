@@ -1,4 +1,5 @@
 #pragma once
+#include "MGX/MGX_base.h"
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -15,14 +16,14 @@ enum E_CALLBACK_MSG
 typedef void (*F_List_realloc_callback)(List l, enum E_CALLBACK_MSG msg, void *arg);
 
 #include "List_gen.h"
-INCLUDE_LIST(char)
-INCLUDE_LIST(short)
-INCLUDE_LIST(int)
-INCLUDE_LIST(long)
-INCLUDE_LIST(size_t)
-INCLUDE_LIST(float)
-INCLUDE_LIST(double)
-INCLUDE_LIST(List)
+//INCLUDE_LIST(char)
+//INCLUDE_LIST(short)
+//INCLUDE_LIST(int)
+//INCLUDE_LIST(long)
+//INCLUDE_LIST(size_t)
+//INCLUDE_LIST(float)
+//INCLUDE_LIST(double)
+//INCLUDE_LIST(List)
 
 List 	List_create(size_t element_size);
 void	List_free(List l);
@@ -89,3 +90,4 @@ void    List_sort(List l, bool (*cmp)(void *a, void *b));
 #define LIST_concat(T) List_concat
 #define LIST_resize(T) List_resize
 #define LIST_swap(T) List_swap
+#define LIST_LOOP(T, L, ptr) for(T *ptr=List_start(L), *end=List_end(L); ptr!=end; ptr++)

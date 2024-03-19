@@ -1,14 +1,14 @@
 #include "List.h"
 #include <stdint.h>
 
-IMPLEMENT_LIST(char)
-IMPLEMENT_LIST(short)
-IMPLEMENT_LIST(int)
-IMPLEMENT_LIST(long)
-IMPLEMENT_LIST(size_t)
-IMPLEMENT_LIST(float)
-IMPLEMENT_LIST(double)
-IMPLEMENT_LIST(List)
+//IMPLEMENT_LIST(char)
+//IMPLEMENT_LIST(short)
+//IMPLEMENT_LIST(int)
+//IMPLEMENT_LIST(long)
+//IMPLEMENT_LIST(size_t)
+//IMPLEMENT_LIST(float)
+//IMPLEMENT_LIST(double)
+//IMPLEMENT_LIST(List)
 
 struct _List{
 	char *data;

@@ -139,3 +139,4 @@ void __List_FUNC(T, sort)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(
 		__List_FUNC(T, quicksort)(l, 0, List_size(l)-1, compare_equal);                                              \
 }\
 
+
