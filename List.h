@@ -35,7 +35,7 @@ void	List_shrink(List l);
 size_t 	List_capacity(List l);
 bool 	List_reserve(List l, size_t capacity);
 void    List_reserve_mult(List l, float mult);
-void 	List_reserve_callback(List l, F_List_realloc_callback callback, void *arg);
+void 	List_realloc_callback(List l, F_List_realloc_callback callback, void *arg);
 void*	List_finde(List l, bool (*compare)(void*, void*), void* arg);
 int	List_findi(List l, bool (*compare)(void*, void*), void* arg);
 void*	List_push(List l, const void* element);
