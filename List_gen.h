@@ -13,7 +13,7 @@ void __List_FUNC_MEMBER(T, M, forward)(List l, void (*func)(typeof(((MGX_T_PTR(T
 #define __IMPLEMENT_MEMBER_(T, M) \
 void __List_FUNC_MEMBER(T, M, forward)(List l, void (*func)(typeof(((MGX_T_PTR(T))0)->M))) \
 {                                                                                                                            \
-        MGX_T_VAR_PTR(T, start) = List_start(l);                                                                             \
+        MGX_T_VAR_PTR(T, start) = (MGX_T_PTR(T))List_start(l);                                                                             \
         MGX_T_VAR_PTR(T, end) = List_end(l);                                                                                 \
 	for(; start!=end; start++)                                                                                           \
 		func(start->M);                                                                                              \
@@ -77,14 +77,14 @@ size_t __List_FUNC(T, rme)(List l, MGX_T_VAR(T, e))                             
 }                                                                                                                            \
 void __List_FUNC(T, foreach)(List l, void (*func)(MGX_T_PTR(T), void*), void *arg)                                           \
 {                                                                                                                            \
-        MGX_T_VAR_PTR(T, start) = List_start(l);                                                                             \
+        MGX_T_VAR_PTR(T, start) = (MGX_T_PTR(T))List_start(l);                                                                             \
         MGX_T_VAR_PTR(T, end) = List_end(l);                                                                                 \
 	for(; start!=end; start++)                                                                                           \
 		func(start,arg);                                                                                             \
 }                                                                                                                            \
 void __List_FUNC(T, forward)(List l, void (*func)(MGX_T(T)))                                                                 \
 {                                                                                                                            \
-        MGX_T_VAR_PTR(T, start) = List_start(l);                                                                             \
+        MGX_T_VAR_PTR(T, start) = (MGX_T_PTR(T))List_start(l);                                                                             \
         MGX_T_VAR_PTR(T, end) = List_end(l);                                                                                 \
 	for(; start!=end; start++)                                                                                           \
 		func(*start);                                                                                                \
@@ -92,7 +92,7 @@ void __List_FUNC(T, forward)(List l, void (*func)(MGX_T(T)))                    
 MGX_WHEN(__List_RETURN_STRUCT)(                                                                                              \
 __List_RETURN_PTR(T) __List_FUNC(T, finde)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)), MGX_T_VAR_PTR(T, arg)) \
 {                                                                                                                            \
-        MGX_T_VAR_PTR(T, start)=List_start(l);			                                                             \
+        MGX_T_VAR_PTR(T, start)=(MGX_T_PTR(T))List_start(l);			                                                             \
         MGX_T_VAR_PTR(T, end) = List_end(l);			                                                             \
 	for(; start!=end; start++)                                                                                           \
 		if(compare_equal(start, arg)){                                                                               \
@@ -103,11 +103,11 @@ __List_RETURN_PTR(T) __List_FUNC(T, finde)(List l, bool (*compare_equal)(MGX_T_P
 )                                                                                                                            \
 int __List_FUNC(T, findi)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)), MGX_T_VAR_PTR(T, arg))                  \
 {                                                                                                                            \
-        MGX_T_VAR_PTR(T, start)=List_start(l);			                                                             \
+        MGX_T_VAR_PTR(T, start)=(MGX_T_PTR(T))List_start(l);			                                                             \
         MGX_T_VAR_PTR(T, end) = List_end(l);			                                                             \
 	for(; start!=end; start++)                                                                                           \
 		if(compare_equal(start, arg)){                                                                               \
-			return start-(MGX_T_PTR(T))List_start(l);                                                            \
+			return start-(MGX_T_PTR(T))(MGX_T_PTR(T))List_start(l);                                                            \
 		}                                                                                                            \
 	return -1;                                                                                                           \
 }                                                                                                                            \
@@ -116,7 +116,7 @@ void __List_FUNC(T, quicksort)(List list, size_t left, size_t right, bool (*cmp)
 	if(left>=right)                                                                                                      \
 		return;                                                                                                      \
                                                                                                                              \
-	MGX_T_VAR_PTR(T, pivot) = List_at(list, right);                                                                      \
+	MGX_T_VAR_PTR(T, pivot) = (MGX_T_PTR(T)List_at(list, right);                                                                      \
 	size_t l=left, r=right-1;                                                                                            \
                                                                                                                              \
 	while(l<r){                                                                                                          \
@@ -138,5 +138,4 @@ void __List_FUNC(T, sort)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(
 	if(List_size(l)>1)                                                                                                   \
 		__List_FUNC(T, quicksort)(l, 0, List_size(l)-1, compare_equal);                                              \
 }\
-
 
