@@ -1,15 +1,6 @@
 #include "List.h"
 #include <stdint.h>
 
-//IMPLEMENT_LIST(char)
-//IMPLEMENT_LIST(short)
-//IMPLEMENT_LIST(int)
-//IMPLEMENT_LIST(long)
-//IMPLEMENT_LIST(size_t)
-//IMPLEMENT_LIST(float)
-//IMPLEMENT_LIST(double)
-//IMPLEMENT_LIST(List)
-
 struct _List{
 	char *data;
 	size_t size;
@@ -22,9 +13,9 @@ struct _List{
 
 List List_create(size_t element_size)
 {
-	List l = malloc(sizeof(struct _List));
+	List l = (List)malloc(sizeof(struct _List));
 	l->element_size = element_size;
-	l->data=malloc(l->element_size);
+	l->data=(char*)malloc(l->element_size);
 	l->size=0;
 	l->max=1;
 	l->reserve_mult=2.0f;
@@ -63,7 +54,7 @@ void List_shrink(List l)
 		if(l->callback)
 			l->callback(l, CM_PRE_REALLOC, l->callback_arg);
 
-		l->data=realloc(l->data,l->size*l->element_size);
+		l->data=(char*)realloc(l->data,l->size*l->element_size);
 		l->max=l->size;
 
 		if(l->callback)
@@ -89,7 +80,7 @@ bool List_reserve(List l, size_t capacity)
 		if(l->callback)
 			l->callback(l, CM_PRE_REALLOC, l->callback_arg);
 
-		l->data=realloc(l->data,capacity*l->element_size);
+		l->data=(char*)realloc(l->data,capacity*l->element_size);
 		l->max=capacity;
 
 		if(l->callback)
@@ -115,7 +106,7 @@ void *Buff_find(char *start, char *end, size_t el_size, bool (*compare)(void*, v
 }
 void *List_finde(List l, bool (*compare)(void*, void*), void *arg)
 {
-	return Buff_find(List_start(l),List_end(l),l->element_size,compare,arg);
+	return Buff_find((char*)List_start(l),(char*)List_end(l),l->element_size,compare,arg);
 }
 
 int List_findi(List l, bool (*compare)(void*, void*), void *arg)
@@ -174,7 +165,7 @@ bool List_copy(List a, List b)
 
 void List_foreach(List l, void (*func)(void*, void*), void *arg)
 {
-	for(char *start=List_start(l), *end=List_end(l); start!=end; start+=l->element_size){
+	for(char *start=(char *)List_start(l), *end=(char*)List_end(l); start!=end; start+=l->element_size){
 		func(start, arg);
 	}
 }
