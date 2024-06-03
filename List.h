@@ -91,4 +91,4 @@ void    List_sort(List l, bool (*cmp)(void *a, void *b));
 #define LIST_resize(T) List_resize
 #define LIST_swap(T) List_swap
 #define LIST_LOOP(T, L, ptr) for(T *ptr=List_start(L), *end=List_end(L); ptr!=end; ptr++)
-#define LIST_FORWARD(T, L, func) for(T *ptr=List_start(L), *end=List_end(L); ptr!=end; ptr++){func(*ptr)}
+#define LIST_FORWARD(T, L, func) for(T *ptr=List_start(L), *end=List_end(L); ptr!=end; ptr++){func(*ptr);}
