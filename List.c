@@ -1,5 +1,6 @@
 #include "List.h"
 #include <stdint.h>
+#include <stdlib.h>
 
 
 /* IMPLEMENT_LIST(char) */
@@ -268,4 +269,10 @@ void List_sort(List l, bool (*cmp)(void *a, void *b))
 {
 	if(List_size(l)>1)
 		quick_sort(l, 0, List_size(l)-1, cmp);
+}
+
+void List_calloc(List l, size_t size)
+{
+  l->data = calloc(size, l->element_size);
+  l->max = size;
 }
