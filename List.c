@@ -276,3 +276,8 @@ void List_calloc(List l, size_t size)
   l->data = calloc(size, l->element_size);
   l->max = size;
 }
+
+void List_reverse(List l) {
+  for (size_t i = 0; i < l->size / 2; i++)
+	  List_swap(l,i,l->size-1-i)
+}

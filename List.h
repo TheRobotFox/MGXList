@@ -52,6 +52,7 @@ void    List_resize(List l, signed long long int size);
 void    List_swap(List l, size_t a, size_t b);
 void    List_sort(List l, bool (*cmp)(void *a, void *b));
 void    List_calloc(List l, size_t size);
+void    List_reverse(List l);
 
 #define LIST(T) List
 
