@@ -1,4 +1,5 @@
 #include "List.h"
+#include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -51,7 +52,7 @@ static inline void* _List_at(List l, signed long long int index)
 
 void* List_at(List l, signed long long int index)
 {
-	if((index<(signed long long)l->max || (index<0)) && l->size)
+	if((index<(signed long long)l->max || (index<0)) && l->data)
 		return _List_at(l,index);
 	return NULL;
 }
@@ -106,7 +107,7 @@ void List_clear(List l)
 {
 	l->size=0;
 }
-void *Buff_find(char *start, char *end, size_t el_size, bool (*compare)(void*, void*), void *arg)
+void *Buff_find(char *start, const char *end, size_t el_size, bool (*compare)(const void*, const void*), const void *arg)
 {
 	for(; start!=end; start+=el_size)
 	{
@@ -115,12 +116,12 @@ void *Buff_find(char *start, char *end, size_t el_size, bool (*compare)(void*, v
 	}
 	return NULL;
 }
-void *List_finde(List l, bool (*compare)(void*, void*), void *arg)
+void *List_finde(List l, bool (*compare)(const void*, const void*), const void *arg)
 {
 	return Buff_find((char*)List_start(l),(char*)List_end(l),l->element_size,compare,arg);
 }
 
-int List_findi(List l, bool (*compare)(void*, void*), void *arg)
+int List_findi(List l, bool (*compare)(const void*, const void*), const void *arg)
 {
 	void* e = List_finde(l, compare, arg);
 	if(e==NULL)
@@ -233,12 +234,19 @@ void List_resize(List l, signed long long int size)
 	}
 }
 
+size_t List_get_element_size(List l)
+{
+	return l->element_size;
+}
+void List_set(List l, size_t index, void *e){
+	memcpy(_List_at(l,index), e, l->element_size);
+}
 void List_swap(List l, size_t a, size_t b)
 {
 	void *tmp=malloc(l->element_size);
 	memcpy(tmp, _List_at(l,a), l->element_size);
-	memcpy(_List_at(l,a), List_at(l,b), l->element_size);
-	memcpy(_List_at(l,b), tmp, l->element_size);
+	List_set(l, a, _List_at(l, b));
+	List_set(l, b, tmp);
 	free(tmp);
 }
 
@@ -279,5 +287,14 @@ void List_calloc(List l, size_t size)
 
 void List_reverse(List l) {
   for (size_t i = 0; i < l->size / 2; i++)
-	  List_swap(l,i,l->size-1-i)
+	  List_swap(l,i,l->size-1-i);
+}
+
+int List_contains(List l, void *e)
+{
+	for (int i=0; i<l->size; i++) {
+		if(memcmp(_List_at(l, i), e, l->element_size)==0)
+			return i;
+	}
+	return -1;
 }

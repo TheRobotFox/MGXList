@@ -1,5 +1,6 @@
 #pragma once
 #include "MGX/MGX_base.h"
+#include <stddef.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -36,14 +37,14 @@ size_t 	List_capacity(List l);
 bool 	List_reserve(List l, size_t capacity);
 void    List_reserve_mult(List l, float mult);
 void 	List_realloc_callback(List l, F_List_realloc_callback callback, void *arg);
-void*	List_finde(List l, bool (*compare)(void*, void*), void* arg);
-int	List_findi(List l, bool (*compare)(void*, void*), void* arg);
+void*	List_finde(List l, bool (*compare)(const void*, const void*), const void* arg);
+int	List_findi(List l, bool (*compare)(const void*, const void*), const void* arg);
 void*	List_push(List l, const void* element);
 void*   List_append(List l, const void *array, size_t n);
 void*   List_pop(List l);
 bool	List_copy(List a, List b); // copy b into a
 void    List_clear(List l);
-void*   Buff_find(char *start, char *end, size_t el_size, bool (*compare)(void*, void*), void *arg);
+void*   Buff_find(char *start, const char *end, size_t el_size, bool (*compare)(const void*, const void*), const void *arg);
 void    List_foreach(List l, void (*func)(void*, void*), void *arg);
 void    List_rmi(List l, size_t index);
 size_t	List_rme(List l, void *e);
@@ -53,6 +54,9 @@ void    List_swap(List l, size_t a, size_t b);
 void    List_sort(List l, bool (*cmp)(void *a, void *b));
 void    List_calloc(List l, size_t size);
 void    List_reverse(List l);
+void    List_set(List l, size_t index, void *e);
+int       List_contains(List l, void *e);
+size_t List_get_element_size(List l);
 
 #define LIST(T) List
 
@@ -85,12 +89,10 @@ void    List_reverse(List l);
 #define LIST_capacity(T) List_capacity
 #define LIST_free(T) List_free
 #define LIST_capacity(T) List_capacity
-#define LIST_capacity(T) List_capacity
-#define LIST_capacity(T) List_capacity
 #define LIST_copy(T) List_copy
 #define LIST_clear(T) List_clear
 #define LIST_concat(T) List_concat
 #define LIST_resize(T) List_resize
 #define LIST_swap(T) List_swap
 #define LIST_LOOP(T, L, ptr) for(T *ptr=LIST_start(T)(L), *end=LIST_end(T)(L); ptr!=end; ptr++)
-#define LIST_FORWARD(T, L, func) for(T *ptr=LIST_start(T)(L), *end=LIST_end(T)(L); ptr!=end; ptr++){func(*ptr);}
+#define LIST_FORWARD(T, L, func) LIST_LOOP(T, L, ptr){func(*ptr);}
