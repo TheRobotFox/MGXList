@@ -44,11 +44,9 @@ int main()
 /*     } */
 /*     Heap_free(h); */
     List l = LIST_create(char);
-    for(int i=0; i<10; i++){
-        /* List_push(l, &i); */
+    for(int i=0; i<2; i++){
+        List_insert(l, 0, &i);
     }
-    int a = 1;
-    List_insert(l, 0, &a);
     List_foreach(l, print, NULL);
     printf("\n");
     List_free(l);

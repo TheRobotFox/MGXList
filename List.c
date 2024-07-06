@@ -80,7 +80,7 @@ static void _List_shift(List l, int index, int amount)
 		start = _List_at(l, index-amount);
 		end = _List_at(l, -1);
 	}else return;
-    if(start!=end){
+    if(List_size(l)){
 		for(; (end-start)*direction>=0; start+=direction*copy){
 			printf("%lu->%lu: %d\n", start-List_start(l), start-copy*direction-List_start(l), copy);
 			memcpy(start-copy*direction, start, copy);
