@@ -40,6 +40,8 @@ void 	List_realloc_callback(List l, F_List_realloc_callback callback, void *arg)
 void*	List_finde(List l, bool (*compare)(const void*, const void*), const void* arg);
 int	List_findi(List l, bool (*compare)(const void*, const void*), const void* arg);
 void*	List_push(List l, const void* element);
+void*	List_insert(List l, int index, const void* element);
+void List_shift(List l, int index, int amount);
 void*   List_append(List l, const void *array, size_t n);
 void*   List_pop(List l);
 bool	List_copy(List a, List b); // copy b into a
@@ -54,7 +56,7 @@ void    List_swap(List l, size_t a, size_t b);
 void    List_sort(List l, bool (*cmp)(void *a, void *b));
 void    List_calloc(List l, size_t size);
 void    List_reverse(List l);
-void    List_set(List l, size_t index, void *e);
+void*   List_set(List l, size_t index, const void *e);
 int       List_contains(List l, void *e);
 size_t List_get_element_size(List l);
 

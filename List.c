@@ -1,7 +1,10 @@
 #include "List.h"
+#include <stdatomic.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 /* IMPLEMENT_LIST(char) */
@@ -30,7 +33,7 @@ List List_create(size_t element_size)
 	l->data=(char*)malloc(l->element_size);
 	l->size=0;
 	l->max=1;
-	l->reserve_mult=2.0f;
+	l->reserve_mult=2;
 	l->callback=NULL;
 
 	return l->data ? l : NULL;
@@ -44,19 +47,63 @@ void List_free(List l)
 
 static inline void* _List_at(List l, signed long long int index)
 {
+	if(!l->size) return List_start(l);
 	if(index<0){
-		index = (l->size-1+((index+1)%l->size));
+		index*=-1;
+		index%=l->size;
+		index=(l->size-index)%l->size;
 	}
+
 	return l->data+(l->element_size*index);
 }
 
 void* List_at(List l, signed long long int index)
 {
-	if((index<(signed long long)l->max || (index<0)) && l->data)
+	if((index<(signed long long)l->max || (index<0)) && l->data && l->size)
 		return _List_at(l,index);
 	return NULL;
 }
+static void _List_shift(List l, int index, int amount)
+{
+	int copy = l->element_size, direction;
+	void *start, *end;
+	List_reserve(l, List_size(l)+amount);
 
+	if(amount>0){
+        copy*=amount;
+		direction=-1;
+		start =_List_at(l, -amount);
+		end = _List_at(l, index);
+	} else if(amount<0){
+        copy*=-amount;
+		direction=1;
+		start = _List_at(l, index-amount);
+		end = _List_at(l, -1);
+	}else return;
+    if(start!=end){
+		for(; (end-start)*direction>=0; start+=direction*copy){
+			printf("%lu->%lu: %d\n", start-List_start(l), start-copy*direction-List_start(l), copy);
+			memcpy(start-copy*direction, start, copy);
+		}
+		int skip = -(end-start)*direction;
+		printf("%lu->%lu: %d\n", end-List_start(l), start-(copy+skip)*direction-List_start(l), copy-skip);
+		memcpy(start-(copy+skip)*direction, end, copy-skip);
+	}
+	l->size+=amount;
+}
+void List_shift(List l, int index, int amount)
+{
+	if(index>=(int)l->size || l->size+amount<0)
+		return;
+	_List_shift(l, index, amount);
+}
+void* List_insert(List l, int index, const void* element)
+{
+	if(index>(int)l->size)
+		List_resize(l, index-1);
+    _List_shift(l, index, 1);
+	return List_set(l, index, element);
+}
 void* List_start(List l){return l->data;}
 void* List_end(List l){return l->data+(l->size*l->element_size);}
 
@@ -186,11 +233,7 @@ void List_rmi(List l, size_t index)
 {
 	if(index>=l->size)
 		return;
-
-	char *data = l->data;
-	l->size--;
-	for(size_t i=index; i<l->size; i++)
-		memcpy(data+i*l->element_size, data+(i+1)*l->element_size, l->element_size);
+	_List_shift(l, index, -1);
 }
 
 size_t List_rme(List l, void *e)
@@ -238,8 +281,11 @@ size_t List_get_element_size(List l)
 {
 	return l->element_size;
 }
-void List_set(List l, size_t index, void *e){
-	memcpy(_List_at(l,index), e, l->element_size);
+void* List_set(List l, size_t index, const void *e){
+	void *p = _List_at(l,index);
+	if(e)
+		memcpy(p, e, l->element_size);
+	return  p;
 }
 void List_swap(List l, size_t a, size_t b)
 {
