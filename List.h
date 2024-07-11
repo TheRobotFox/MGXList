@@ -69,7 +69,7 @@ size_t List_get_element_size(List l);
 #define LIST_get(T) *(MGX_T_PTR(T))List_at
 #define LIST_create(T) List_create(sizeof(MGX_T(T)))
 #define LIST_push(T) _LIST(T, push)
-#define LIST_pop(T) _LIST(T, pop)
+#define LIST_pop(T) (MGX_T_PTR(T))List_pop
 #define LIST_append(T) _LIST(T, append)
 #define LIST_finde(T) _LIST(T, finde)
 #define LIST_findi(T) _LIST(T, findi)
@@ -96,5 +96,5 @@ size_t List_get_element_size(List l);
 #define LIST_concat(T) List_concat
 #define LIST_resize(T) List_resize
 #define LIST_swap(T) List_swap
-#define LIST_LOOP(T, L, ptr) for(T *ptr=LIST_start(T)(L), *end=LIST_end(T)(L); ptr!=end; ptr++)
+#define LIST_LOOP(T, L, ptr) for(T *ptr=LIST_start(T)(L); ptr!=LIST_end(T)(L); ptr++)
 #define LIST_FORWARD(T, L, func) LIST_LOOP(T, L, ptr){func(*ptr);}

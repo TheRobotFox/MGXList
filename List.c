@@ -59,7 +59,7 @@ static inline void* _List_at(List l, signed long long int index)
 
 void* List_at(List l, signed long long int index)
 {
-	if((index<(signed long long)l->max || (index<0)) && l->data && l->size)
+	if(index<(signed long long)l->size && l->data)
 		return _List_at(l,index);
 	return NULL;
 }
@@ -251,7 +251,8 @@ size_t List_rme(List l, void *e)
 				}
 				break;
 		}
-		memcpy(_List_at(l,i), List_at(l, i+skip), l->element_size);
+		if(i+skip<size)
+			memcpy(_List_at(l,i), _List_at(l, i+skip), l->element_size);
 	}
 	l->size-=skip;
 	return skip;

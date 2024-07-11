@@ -45,8 +45,13 @@ int main()
 /*     Heap_free(h); */
     List l = LIST_create(char);
     for(int i=0; i<2; i++){
-        List_insert(l, 0, &i);
+        int mod = i%3;
+        List_insert(l, -1, &mod);
     }
+    List_foreach(l, print, NULL);
+    printf("\n");
+    int d = 0;
+    List_rme(l, &d);
     List_foreach(l, print, NULL);
     printf("\n");
     List_free(l);
