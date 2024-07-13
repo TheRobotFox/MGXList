@@ -100,7 +100,7 @@ void List_shift(List l, int index, int amount)
 void* List_insert(List l, int index, const void* element)
 {
 	if(index>(int)l->size)
-		List_resize(l, index-1);
+		List_resize(l, index);
     _List_shift(l, index, 1);
 	return List_set(l, index, element);
 }

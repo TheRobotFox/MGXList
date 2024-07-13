@@ -48,10 +48,9 @@ int Heap_rmi(Heap heap, size_t index, void *out)
     if(out)
         memcpy(out, List_at(heap->list, index), List_get_element_size(heap->list));
 
-    List_pop(heap->list);
-    void *ins=List_end(heap->list);
+    void *ins=List_at(heap->list, -1);
 
-    while(CHILD(index, 2)<=List_size(heap->list)) {
+    while(CHILD(index, 2)<List_size(heap->list)) {
         if(heap->a_larger_b(List_at(heap->list, CHILD(index, 1)), List_at(heap->list, CHILD(index,2)))) {
             List_set(heap->list, index, List_at(heap->list, CHILD(index, 1)));
             index=CHILD(index,1);
@@ -60,11 +59,12 @@ int Heap_rmi(Heap heap, size_t index, void *out)
             index=CHILD(index,2);
         }
     }
-    if(CHILD(index, 1)<=List_size(heap->list)) {
+    if(CHILD(index, 1)<List_size(heap->list)) {
         List_set(heap->list, index, List_at(heap->list, CHILD(index, 1)));
         index=CHILD(index, 1);
     }
 
+    List_pop(heap->list);
     List_set(heap->list, index, ins);
     return 0;
 }
