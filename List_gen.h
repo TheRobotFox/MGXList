@@ -116,7 +116,7 @@ void __List_FUNC(T, quicksort)(List list, size_t left, size_t right, bool (*cmp)
 	if(left>=right)                                                                                                      \
 		return;                                                                                                      \
                                                                                                                              \
-	MGX_T_VAR_PTR(T, pivot) = (MGX_T_PTR(T)List_at(list, right);                                                                      \
+                              MGX_T_VAR_PTR(T, pivot) = (MGX_T_PTR(T))List_at(list, right); \
 	size_t l=left, r=right-1;                                                                                            \
                                                                                                                              \
 	while(l<r){                                                                                                          \

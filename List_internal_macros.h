@@ -17,6 +17,7 @@
 #define __List_RETURN_STRUCT MGX_OR(MGX_NOT(__MGX_T_IS_ARRAY(T)), LIST_RETURN_STRUCT)
 #define __List_FORWARDHANDLER(I, M, T, ...) M(T, MGX_ARG_GET_N(I, __VA_ARGS__))
 #define __List_FOREACH(M, ...) __MGX_ARG_FOREACH(1, __List_FORWARDHANDLER, __VA_ARGS__)
+
 #ifdef __GNUC__
 #define __List_FUNC_MEMBER(T, M, Task) __List_CAT(__List_CAT(__List_PREFIX(T), __##M), _## Task)
 #else
