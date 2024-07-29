@@ -1,11 +1,16 @@
-#include "Heap.h"
-
+#define LIST_GEN int, float
 #include "List.h"
+LIST_GEN_IMPL
+
+/* IMPLEMENT_LIST(int) */
+/* IMPLEMENT_LIST(float) */
 #include "stdio.h"
 
 #include "stdlib.h"
 
 #define DEFAULT_SIZE 50
+typedef LIST(int) Ints;
+typedef LIST(float) Floats;
 
 static int a_larger_b(void *a, void *b)
 {
@@ -44,21 +49,15 @@ int main()
     /*     printf("%d ", val); */
     /* } */
     /* Heap_free(h); */
-    List l = LIST_create(int);
-    /* for(int i=0; i<30; i++){ */
-    /*     int mod = i%3; */
-    /*     List_insert(l, 2, &mod); */
-    /* } */
-    int a = 1;
-    List_push(l, &a);
-    List_push(l, &a);
-    a=3;
-    List_insert(l, 2, &a);
-    List_foreach(l, print, NULL);
-    printf("\n");
-    int d = 0;
-    List_rme(l, &d);
-    List_foreach(l, print, NULL);
-    printf("\n");
-    List_free(l);
+
+    LIST(float) f = LIST_create(float);
+    LIST_push(f, 1);
+    LIST_push(f, 2);
+    printf("List<%s> contains %lu elements!\n", LIST_GET_TYPE(f), LIST_size(f));
+
+    LIST(int) i = LIST_create(int);
+    LIST_push(i, 1);
+    LIST_push(i, 2);
+    LIST_push(i, 2);
+    printf("List<%s> contains %lu elements!\n", LIST_GET_TYPE(i), LIST_size(i));
 }
