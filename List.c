@@ -65,35 +65,41 @@ void* List_at(List l, signed long long int index)
 }
 static void _List_shift(List l, int index, int amount)
 {
-	int copy = l->element_size, direction;
-	void *start, *end;
-	List_reserve(l, List_size(l)+amount);
+	if(!amount || index+amount<0) return;
 
-	if(amount>0){
-        copy*=amount;
-		direction=-1;
-		start =_List_at(l, -amount);
-		end = _List_at(l, index);
-	} else if(amount<0){
-        copy*=-amount;
-		direction=1;
-		start = _List_at(l, index-amount);
-		end = _List_at(l, -1);
-	}else return;
-    if(List_size(l)){
-		for(; (end-start)*direction>=0; start+=direction*copy){
-			printf("%lu->%lu: %d\n", start-List_start(l), start-copy*direction-List_start(l), copy);
-			memcpy(start-copy*direction, start, copy);
-		}
-		int skip = -(end-start)*direction;
-		printf("%lu->%lu: %d\n", end-List_start(l), start-(copy+skip)*direction-List_start(l), copy-skip);
-		memcpy(start-(copy+skip)*direction, end, copy-skip);
-	}
-	l->size+=amount;
+	List_resize(l, index+amount);
+	size_t copy_bytes = (amount > 0 ? amount : -amount)*l->element_size;
+
+	memmove(List_at(l, index), List_at(l, index+amount), copy_bytes);
+	/* int copy = l->element_size, direction; */
+	/* char *start, *end; */
+	/* List_reserve(l, List_size(l)+amount); */
+
+	/* if(amount>0){ */
+    /*     copy*=amount; */
+	/* 	direction=-1; */
+	/* 	start =_List_at(l, -amount); */
+	/* 	end = _List_at(l, index); */
+	/* } else if(amount<0){ */
+    /*     copy*=-amount; */
+	/* 	direction=1; */
+	/* 	start = _List_at(l, index-amount); */
+	/* 	end = _List_at(l, -1); */
+	/* }else return; */
+    /* if(List_size(l)){ */
+	/* 	for(; (end-start)*direction>=0; start+=direction*copy){ */
+	/* 		printf("%lu->%lu: %d\n", start-List_start(l), start-copy*direction-List_start(l), copy); */
+	/* 		memcpy(start-copy*direction, start, copy); */
+	/* 	} */
+	/* 	int skip = -(end-start)*direction; */
+	/* 	printf("%lu->%lu: %d\n", end-(char*)List_start(l), start-(copy+skip)*direction-(char*)List_start(l), copy-skip); */
+	/* 	memcpy(start-(copy+skip)*direction, end, copy-skip); */
+	/* } */
+	/* l->size+=amount; */
 }
 void List_shift(List l, int index, int amount)
 {
-	if(index>=(int)l->size || l->size+amount<0)
+	if(index>=(int)l->size || (int)l->size+amount<0)
 		return;
 	_List_shift(l, index, amount);
 }
@@ -271,11 +277,10 @@ void List_resize(List l, signed long long int size)
 		if(l->size>0)
 			l->size+=size;
 		return;
-	} else {
-		if(size>(signed long long int)l->max)
-			List_reserve(l, size);
-		l->size=size;
 	}
+	if(size>(signed long long int)l->max)
+		List_reserve(l, size);
+	l->size=size;
 }
 
 size_t List_get_element_size(List l)
@@ -339,7 +344,7 @@ void List_reverse(List l) {
 
 int List_contains(List l, void *e)
 {
-	for (int i=0; i<l->size; i++) {
+	for (size_t i=0; i<l->size; i++) {
 		if(memcmp(_List_at(l, i), e, l->element_size)==0)
 			return i;
 	}

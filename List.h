@@ -74,10 +74,10 @@ int       List_contains(List l, void *e);
 #define LIST(T) __List_type(T)
 
 #define LIST_GET_TYPE(LIST) __List_GET_TYPE_STR(LIST)
-#define LIST_create(TYPE) (__List_type(TYPE)){List_create(sizeof(TYPE))}
-#define LIST_at(LIST, index) (MGX_T_PTR(__List_GET_TYPE(LIST)))List_at(LIST.__data, index)
-#define LIST_start(LIST) (MGX_T_PTR(__List_GET_TYPE(LIST)))List_start(LIST.__data)
-#define LIST_end(LIST) (MGX_T_PTR(__List_GET_TYPE(LIST)))List_start(LIST.__data)
+#define LIST_create(TYPE) (__List_type(TYPE)){List_create(sizeof(MGX_T(TYPE))), NULL}
+#define LIST_at(LIST, index) __List_GET_FUNC(LIST, at)(LIST.__data, index)
+#define LIST_start(LIST) __List_GET_FUNC(LIST, start)(LIST.__data)
+#define LIST_end(LIST) __List_GET_FUNC(LIST, end)(LIST.__data)
 #define LIST_get(LIST) *LIST_at(LIST)
 #define LIST_push(LIST, element) __List_GET_FUNC(LIST, push)(LIST.__data, element)
 #define LIST_pop(LIST) __List_GET_FUNC(LIST, pop)(LIST->__data)
@@ -104,8 +104,9 @@ int       List_contains(List l, void *e);
 #define LIST_concat(LIST)
 #define LIST_resize(LIST)
 #define LIST_swap(LIST)
-#define LIST_LOOP(T, L, ptr) for(T *ptr=LIST_start(T)(L); ptr!=LIST_end(T)(L); ptr++)
-#define LIST_FORWARD(T, L, func) LIST_LOOP(T, L, ptr){func(*ptr);}
+#define LIST_ITER(L, ptr) for(typeof(L.ptype) ptr=LIST_start(L); ptr!=LIST_end(L); ptr++)
+#define LIST_FOREACH(L, val) for(typeof(*L.ptype) *__ptr=LIST_start(L), val; __ptr!=LIST_end(L); __ptr++) if((val=*__ptr) || 1)
+#define LIST_FORWARD(L, func) LIST_LOOP(L, ptr){func(*ptr);}
 
 #else
 
