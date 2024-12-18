@@ -23,22 +23,22 @@
 __INCLUDE_LIST (__VA_ARGS__)
 /* __INCLUDE_MEMBER(__VA_ARGS__)\ */
 
-/* #define __INCLUDE_LIST(T, ...) \ */
-/*                                                                                                                              \ */
-/* MGX_IF(__List_RETURN_STRUCT)(                                                                                                \ */
-/* __List_RETURN_PTR(T) __List_FUNC(T, push)(List l, MGX_T_VAR(T, e));                                                          \ */
-/* __List_RETURN(T) __List_FUNC(T, append)(List l);                                                                             \ */
-/* __List_RETURN(T) __List_FUNC(T, pop)(List l);                                                                                \ */
-/* ,                                                                                                                            \ */
-/*     void* __List_FUNC(T, push)(__List_type(T) l, MGX_T_VAR(T, e));     \ */
-/* void* __List_FUNC(T, append)(List l, MGX_T_VAR_PTR(T,array), size_t n);                                                      \ */
-/* )                                                                                                                            \ */
-/* size_t __List_FUNC(T, rme)(List l, MGX_T_VAR(T, e));                                                                         \ */
-/* void __List_FUNC(T, foreach)(List l, void (*func)(MGX_T_PTR(T), void*), void *arg);                                          \ */
-/* void __List_FUNC(T, forward)(List l, void (*func)(MGX_T(T)));                                                                \ */
-/* __List_RETURN_PTR(T) __List_FUNC(T, finde)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)), MGX_T_VAR_PTR(T, arg));\ */
-/* int __List_FUNC(T, findi)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)), MGX_T_VAR_PTR(T, arg));                 \ */
-/* void __List_FUNC(T, sort)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)));                                        \ */
+#define __INCLUDE_LIST(T, ...) \
+                                                                                                                             \
+MGX_IF(__List_RETURN_STRUCT)(                                                                                                \
+__List_RETURN_PTR(T) __List_FUNC(T, push)(List l, MGX_T_VAR(T, e));                                                          \
+__List_RETURN(T) __List_FUNC(T, append)(List l);                                                                             \
+__List_RETURN(T) __List_FUNC(T, pop)(List l);                                                                                \
+,                                                                                                                            \
+    void* __List_FUNC(T, push)(__List_type(T) l, MGX_T_VAR(T, e));     \
+void* __List_FUNC(T, append)(List l, MGX_T_VAR_PTR(T,array), size_t n);                                                      \
+)                                                                                                                            \
+size_t __List_FUNC(T, rme)(List l, MGX_T_VAR(T, e));                                                                         \
+void __List_FUNC(T, foreach)(List l, void (*func)(MGX_T_PTR(T), void*), void *arg);                                          \
+void __List_FUNC(T, forward)(List l, void (*func)(MGX_T(T)));                                                                \
+__List_RETURN_PTR(T) __List_FUNC(T, finde)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)), MGX_T_VAR_PTR(T, arg));\
+int __List_FUNC(T, findi)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)), MGX_T_VAR_PTR(T, arg));                 \
+void __List_FUNC(T, sort)(List l, bool (*compare_equal)(MGX_T_PTR(T), MGX_T_PTR(T)));                                        \
 
 #define IMPLEMENT_LIST(...) \
 __List_EXPAND(__IMPLEMENT_LIST __MGX_LPAREN MGX_ARG_FIRST(__VA_ARGS__) __MGX_RPAREN)
