@@ -65,37 +65,16 @@ void* List_at(List l, signed long long int index)
 }
 static void _List_shift(List l, int index, int amount)
 {
-	if(!amount || index+amount<0) return;
+	int list_size = List_size(l);
+	if(index>=list_size) return List_resize(l, list_size+amount);;
 
-	List_resize(l, index+amount);
-	size_t copy_bytes = (amount > 0 ? amount : -amount)*l->element_size;
-
-	memmove(List_at(l, index), List_at(l, index+amount), copy_bytes);
-	/* int copy = l->element_size, direction; */
-	/* char *start, *end; */
-	/* List_reserve(l, List_size(l)+amount); */
-
-	/* if(amount>0){ */
-    /*     copy*=amount; */
-	/* 	direction=-1; */
-	/* 	start =_List_at(l, -amount); */
-	/* 	end = _List_at(l, index); */
-	/* } else if(amount<0){ */
-    /*     copy*=-amount; */
-	/* 	direction=1; */
-	/* 	start = _List_at(l, index-amount); */
-	/* 	end = _List_at(l, -1); */
-	/* }else return; */
-    /* if(List_size(l)){ */
-	/* 	for(; (end-start)*direction>=0; start+=direction*copy){ */
-	/* 		printf("%lu->%lu: %d\n", start-List_start(l), start-copy*direction-List_start(l), copy); */
-	/* 		memcpy(start-copy*direction, start, copy); */
-	/* 	} */
-	/* 	int skip = -(end-start)*direction; */
-	/* 	printf("%lu->%lu: %d\n", end-(char*)List_start(l), start-(copy+skip)*direction-(char*)List_start(l), copy-skip); */
-	/* 	memcpy(start-(copy+skip)*direction, end, copy-skip); */
-	/* } */
-	/* l->size+=amount; */
+	if(amount>0){
+		List_resize(l, list_size+amount);
+		memmove(List_at(l, index+amount), List_at(l, index), (list_size-index)*l->element_size);
+	} else {
+		memmove(List_at(l, index), List_at(l, index-amount), (list_size-index+amount)*l->element_size);
+		List_resize(l, list_size+amount);
+	}
 }
 void List_shift(List l, int index, int amount)
 {
